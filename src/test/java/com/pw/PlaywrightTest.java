@@ -2,9 +2,12 @@ package com.pw;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -47,8 +50,21 @@ public class PlaywrightTest {
             for (BrowserType type : browserTypes) {
                 Page page = type.launch().newPage();
                 page.navigate("https://www.whatsmybrowser.org/");
-                page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(type.name()+".png")));
+                page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(type.name() + ".png")));
             }
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"chrome", "msedge"})
+    public void parametrizedBrowserChannels(String channel) {
+        try (Playwright pw = Playwright.create()) {
+            Browser browser = pw.chromium().launch(new BrowserType.LaunchOptions().setChannel(channel).setHeadless(false).setSlowMo(1000));
+            Page page = browser.newPage();
+            page.navigate("https://www.whatsmybrowser.org/");
+            Locator details = page.locator(".header");
+            System.out.println(details.first().innerText());
+            page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(channel + ".png")));
         }
     }
 }
