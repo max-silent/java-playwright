@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+.gradle
+gradle
+.idea
+build
+*.log
+.vscode/
+.history/
+.junit-results
+/.trash
