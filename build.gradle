@@ -21,3 +21,15 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+
+    systemProperty 'java.util.logging.config.file', "${project.rootDir}/src/test/resources/logging-test.properties"
+
+    forkEvery = 1
+
+    testLogging {
+        showStandardStreams = true
+    }
+}
