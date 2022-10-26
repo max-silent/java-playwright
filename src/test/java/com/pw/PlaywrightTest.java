@@ -1,10 +1,6 @@
 package com.pw;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -72,7 +68,8 @@ public class PlaywrightTest {
 
     @Test
     public void monitorHttpTraffic() {
-        Page page = Playwright.create().chromium().launch().newPage();
+        try (Playwright pw = Playwright.create()) {
+            Page page = pw.chromium().launch().newPage();
 //        page.onRequest(req -> System.out.println(">>> " + req.method() + ": " + req.url()));
 //        page.onResponse(resp -> {
 //            System.out.println("<<< " + resp.status() + ":");
@@ -80,18 +77,19 @@ public class PlaywrightTest {
 //        });
 
 // Approach 1
-        List<Integer> statuses = new ArrayList<>();
-        page.onResponse(resp -> statuses.add(resp.status()));
-        page.navigate("https://playwright.dev/");
-        System.out.println(statuses);
-        boolean unexpectedStatus = statuses.stream().anyMatch(status -> status < 200 || status >= 300);
-        Assertions.assertFalse(unexpectedStatus);
+            List<Integer> statuses = new ArrayList<>();
+            page.onResponse(resp -> statuses.add(resp.status()));
+            page.navigate("https://playwright.dev/");
+            System.out.println(statuses);
+            boolean unexpectedStatus = statuses.stream().anyMatch(status -> status < 200 || status >= 300);
+            Assertions.assertFalse(unexpectedStatus);
 
 // Approach 2
-        List<Boolean> results = new ArrayList<>();
-        page.onResponse(resp -> results.add(resp.ok()));
-        page.navigate("https://playwright.dev/");
-        System.out.println(results);
-        Assertions.assertTrue(results.stream().allMatch(result -> result));
+            List<Boolean> results = new ArrayList<>();
+            page.onResponse(resp -> results.add(resp.ok()));
+            page.navigate("https://playwright.dev/");
+            System.out.println(results);
+            Assertions.assertTrue(results.stream().allMatch(result -> result));
+        }
     }
 }

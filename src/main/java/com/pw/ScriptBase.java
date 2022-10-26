@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 public class ScriptBase {
     protected String home = "file:///" + System.getProperty("user.dir") + "\\src\\web\\home.html";
+    protected String advantages = "file:///" + System.getProperty("user.dir") + "\\src\\web\\advantages.html";
 
     protected static Playwright playwright;
     protected static Browser browser;
