@@ -13,8 +13,8 @@ dependencies {
 //    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-//    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
-    implementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
+//    implementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
     implementation 'com.microsoft.playwright:playwright:1.27.1'
 }
 
@@ -31,5 +31,48 @@ tasks.withType(Test).configureEach {
 
     testLogging {
         showStandardStreams = true
+    }
+}
+
+
+// Below is debug-and-learn code...
+
+task customTestTask1(type: Test) {
+    description = 'Run few specific tests by testTask1.'
+    useJUnitPlatform()
+    include("com/pw/PlaywrightTest.*")
+    exclude("com/pw/RouteProcessingTest.*")
+    filter {
+        includeTestsMatching "com.pw.PlaywrightTest.*"
+        excludeTestsMatching "com.pw.RouteProcessingTest.*"
+    }
+}
+
+tasks.register("customTestTask2", Test){
+    it.useJUnitPlatform()
+//    it.include("com/pw/PlaywrightTest.*")
+    it.exclude("com/pw/RouteProcessingTest.*")
+    it.filter {
+//        includeTestsMatching "com.pw.PlaywrightTest.firstPlaywrightScript"
+        includeTestsMatching "com.pw.PlaywrightTest.*"
+//        excludeTestsMatching "com.pw.RouteProcessingTest.*"
+    }
+}
+
+task someTask1 {
+    doLast {
+        System.out.println("Bye Gradle")
+    }
+    doFirst {
+        System.out.println("Hello Gradle")
+    }
+}
+task someTask2 {
+    dependsOn someTask1
+    doFirst {
+        System.out.println("task2 first output")
+    }
+    doLast {
+        System.out.println("task2 second output")
     }
 }
